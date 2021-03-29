@@ -1,0 +1,36 @@
+server:
+  port: 8888
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: git@github.com:dwen77/config.git
+          clone-on-start: true
+          ignore-local-ssh-settings: true
+          hostKeyAlgorithm: ssh-rsa
+          private-key: |
+                      -----BEGIN RSA PRIVATE KEY-----
+                      PUT THE PRIVATE KEY
+                      -----END RSA PRIVATE KEY-----
+          host-key: AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+          strict-host-key-checking: false
+          search-paths:
+            - '{application}-config-file/src/main/resources'
+#            - service-y/src/main/resources
+          refresh-rate: 60
+    bus:
+      enabled: true
+      trace:
+        enabled: true
+  security:
+    user:
+      name: root
+      password: s3cr3t
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
