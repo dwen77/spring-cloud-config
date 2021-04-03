@@ -5,12 +5,55 @@ management:
   endpoints:
     web:
       exposure:
-        include: env
+        include: '*'
 spring:
   cloud:
+    stream:
+      bindings:
+        # Override spring cloud bus configuration with a specific binder named "bus"
+        springCloudBusInput:
+          binder: bus
+          destination: my-cloud-bus3
+          content-type: application/json
+          group: "${spring.application.name}.bus.${hostname}"
+        springCloudBusOutput:
+          binder: bus
+          destination: my-cloud-bus3
+          content-type: application/json
+          group: "${spring.application.name}.bus.${hostname}"
+      kafka:
+        streams:
+          bindings:
+            springCloudBusInput:
+              consumer:
+                startOffset: latest # Reset offset to the latest value to avoid consume configserver notifications on startup
+                resetOffsets: true
+        binder:
+          producer-properties:
+            delivery.timeout.ms: 360000
+          auto-create-topics: false
+      binders:
+        bus:
+          type: kafka
+          defaultCandidate: false
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    binder:
+                      brokers: localhost:9092
     bus:
       env:
         enabled: true
       refresh:
         enabled: true
+      destination: my-cloud-bus3
       id: "${vcap.application.name:${spring.application.name:application}:${spring.profiles.active}},${spring.profiles.include}:${vcap.application.instance_index:${spring.application.index:${local.server.port:${server.port:0}}}}:${vcap.application.instance_id:${random.value}}"
+server:
+  port: 8180
+health:
+  config:
+    enabled: true
+    time-to-live: 0
+
