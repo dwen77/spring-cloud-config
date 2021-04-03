@@ -24,4 +24,13 @@ public class ServiceXController {
         }
         return String.format("Hello! You're %s\n", username);
     }
+
+
+    @GetMapping(
+            value = "/whoami2/{username}",
+            produces = MediaType.TEXT_PLAIN_VALUE)
+    public String whoami2(@PathVariable("username") String username) {
+        BlackListChecker blackListChecker = new BlackListChecker();
+        return blackListChecker.check(username);
+    }
 }
